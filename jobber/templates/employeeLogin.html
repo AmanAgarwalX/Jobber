@@ -1,0 +1,43 @@
+{%extends "layout.html" %}
+{%block content%}
+<h1>Login Page</h1>
+<form method="POST">
+    {{form.hidden_tag()}}
+    <div>
+            {{form.email.label}}
+            {% if form.email.errors%}
+                {{form.email}}
+                    {% for error in form.email.errors%}
+                        <span>{{error}}</span>
+                    {% endfor%}
+            {%else%}
+                {{form.email}}
+            {% endif %}
+    </div>
+   
+    <div>
+            {{form.password.label}}
+            {% if form.password.errors%}
+                {{form.password}}
+                    {% for error in form.password.errors%}
+                        <span>{{error}}</span>
+                    {% endfor%}
+            {%else%}
+                {{form.password}}
+            {% endif %}
+    </div>
+    <div>
+        {{form.remember}}
+        {{form.remember.label}}
+    </div>
+    <div>
+        {{form.submit}}
+    </div>
+    <div>
+        <small><a href="#">Forgot Password?</a></small>
+    </div>
+    <div>
+        <p>Dont have an account? Register Here <a href=" {{ url_for('employeeregister') }} ">Sign Up</a></p>
+    </div>
+</form>
+{%endblock%}
