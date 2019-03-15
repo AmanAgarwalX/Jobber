@@ -1,11 +1,6 @@
 {%extends "layout.html"%}
 {%block content%}
 <h1>This is home page</h1>
-{% if current_user.is_authenticated %}
-<a href="{{url_for('employeeaccount')}}">Account</a>
-<a href="{{url_for('logout')}}">Logout</a>
-{% else %}
-<a href="{{url_for('employeelogin')}}">Login</a>
-<a href="{{url_for('employeeregister')}}">Register</a>
-{% endif %}
+<a href="{{url_for('employeeHome')}}">Employee Home</a>
+<a href="{{url_for('employerHome')}}">Employer Home</a>
 {%endblock content%}
