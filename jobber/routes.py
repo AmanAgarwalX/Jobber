@@ -1,15 +1,56 @@
-from flask import url_for,render_template,flash,redirect,request
+from flask import url_for,render_template,flash,redirect,request,jsonify,abort,make_response,request
 import os
+import time
 from PIL import Image
+from datetime import datetime
 from jobber import app,db,bcrypt
-from jobber.models import User
+from jobber.models import *
 from flask_login import login_user,current_user,logout_user,login_required
-from jobber.forms import EmployeeUpdateAccountForm,EmployeeRegistrationForm,EmployeeLoginForm,EmployerRegistrationForm,EmployerLoginForm,EmployerUpdateAccountForm
+from jobber.forms import *
 
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html')
+    page_num=request.args.get('page',1,type=int)
+    posts=Post.query.order_by(Post.date_posted.desc()).paginate(per_page=2,page=page_num)
+    return render_template('home.html',posts=posts)
+
+@app.route("/employer/newjob",methods=['GET', 'POST'])
+@login_required(role='employer')
+def newjob():
+    form=NewJobForm()
+    if form.validate_on_submit():
+        job=Job(title=form.title.data,location=form.location.data,typeofjob=form.typeofjob.data,salary=form.salary.data,description=form.description.data,user_id=current_user.id)
+        db.session.add(job)
+        db.session.commit()
+        flash(f'New Job Created')
+        return redirect(url_for('viewjob'))
+    return render_template('newJobPage.html',title='New Job Form',form=form)
+
+
+@app.route("/employer/jobs")
+@login_required(role='employer')
+def viewjob():
+    return render_template('viewJobs.html',title='View Jobs',jobs=current_user.jobs,user=current_user.name)
+
+@app.route("/employer/interviews/<job_id>")
+@login_required(role='employer')
+def viewinterviews(job_id):
+    interviews=Job.query.get(job_id).interviews
+    return render_template('viewinterviews.html',title='View Interviews for'+str(job_id),interviews=interviews)
+
+@app.route("/employer/setinterview/<job_id>",methods=['GET', 'POST'])
+@login_required(role='employer')
+def setinterview(job_id):
+    form=NewInterviewForm()
+    if form.validate_on_submit():
+        interview=Interview(title=form.title.data,location=form.location.data,time=datetime.combine(form.date.data,form.time.data),description=form.description.data,job=job_id)
+        db.session.add(interview)
+        db.session.commit()
+        flash(f'New Interview Created')
+        return redirect(url_for('viewinterviews',job_id=job_id))
+    return render_template('setInterview.html',title='Set Interview Form',form=form,job_id=job_id)
+
 
 @app.route("/employee/home")
 def employeeHome():
@@ -49,7 +90,7 @@ def employeeregister():
         db.session.add(user)
         db.session.commit()
         flash(f'Account Created')
-        return redirect(url_for('employeelogin'))
+        return redirect(url_for('employeeupdate'))
     return render_template('employeeRegister.html',title='Employee Register',form=form)
 
 @app.route("/employee/login", methods=['GET', 'POST'])
@@ -71,6 +112,32 @@ def employeelogin():
         else:
             flash(f'Incorrect Log in')
     return render_template('employeeLogin.html',title='Employee Login',form=form)
+
+@app.route("/employee/update", methods=['GET', 'POST'])
+@login_required(role='employee')
+def employeeupdate():
+    if current_user.is_authenticated:
+        if current_user.type=='employee':
+            form=EmployeeUpdateForm()
+            if form.validate_on_submit():
+                if form.picture.data:
+                    picture_fn=save_picture(form.picture.data)
+                    current_user.profile_picture=picture_fn
+                    db.session.commit()
+                if form.cv.data:
+                    cv_fn=save_cv(form.cv.data)
+                    current_user.cv=cv_fn
+                    post = Post(title=current_user.name, content="upload", author=current_user)
+                    db.session.add(post)
+                    db.session.commit()
+                    post.old_cv=cv_fn
+                    db.session.commit()
+                return redirect(url_for('employeeHome'))
+            return render_template('employeeUpdate.html',title='Employee Update',form=form)
+        else:
+            return redirect(url_for('employerHome'))
+    else:
+        return redirect(url_for('employeeLogin'))
 
 @app.route("/employer/register", methods=['GET', 'POST'])
 def employerregister():
@@ -125,6 +192,14 @@ def save_picture(pic):
     i.save(picture_path)
     return picture_fn
 
+def save_cv(cv):
+    _,f_ext=os.path.splitext(cv.filename)
+    cv_fn=current_user.email+str(int(round(time.time() * 1000)))+f_ext
+    cv_path=os.path.join(app.root_path,'static/cvs',cv_fn)
+    cv.save(cv_path)
+    return cv_fn
+
+
 @app.route("/employee/account", methods=['GET', 'POST'])
 @login_required(role='employee')
 def employeeaccount():
@@ -172,3 +247,4 @@ def employeraccount():
         form.company_info.data=current_user.company_info
         form.position.data=current_user.position
     return render_template('employerAccount.html',title='Employee Account',form=form)
+

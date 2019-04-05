@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField,PasswordField,SubmitField,BooleanField,TextAreaField,ValidationError
-from wtforms.validators import DataRequired,Email,Length,EqualTo
+from wtforms import StringField,PasswordField,SubmitField,BooleanField,TextAreaField,ValidationError,IntegerField,DateTimeField
+from wtforms.validators import DataRequired,Email,Length,EqualTo,Required,Optional
+from wtforms.fields.html5 import DateField,TimeField
 from jobber.models import User
 from flask_login import current_user
 
@@ -45,6 +46,7 @@ class EmployerLoginForm(FlaskForm):
 
 class EmployeeUpdateAccountForm(FlaskForm):
     picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpeg','png','JPG'])])
+    cv=FileField('Update CV',validators=[FileAllowed(['pdf','PDF'])])
     email=StringField('Email Address',validators=[DataRequired(),Email()])
     name=StringField('Name',validators=[DataRequired()])
     submit=SubmitField('Update')
@@ -53,6 +55,27 @@ class EmployeeUpdateAccountForm(FlaskForm):
             user=User.query.filter_by(email=email.data.lower()).first()
             if(user):
                 raise ValidationError('That email is already registered')
+            
+class EmployeeUpdateForm(FlaskForm):
+    picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpeg','png','JPG'])])
+    cv=FileField('Upload CV',validators=[FileAllowed(['pdf','PDF'])])
+    submit=SubmitField('Update')
+
+class NewJobForm(FlaskForm):
+    title=StringField('Title',validators=[DataRequired()])
+    location=StringField('Location',validators=[DataRequired()])
+    typeofjob=StringField('Type of Job',validators=[DataRequired()])
+    salary=IntegerField('Salary',validators=[DataRequired()])
+    description=TextAreaField('Job Info',validators=[DataRequired()])
+    submit=SubmitField('Add')
+
+class NewInterviewForm(FlaskForm):
+    title=StringField('Title',validators=[DataRequired()])
+    location=StringField('Location',validators=[DataRequired()])
+    date=DateField('Date',format='%Y-%m-%d')
+    time=TimeField('Time')
+    description=TextAreaField('Job Info',validators=[DataRequired()])
+    submit=SubmitField('Add')
 
 class EmployerUpdateAccountForm(FlaskForm):
     picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpeg','png','JPG'])])

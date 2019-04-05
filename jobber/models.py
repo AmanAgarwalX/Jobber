@@ -1,11 +1,15 @@
 from jobber import db,login_manager
 from flask_login import UserMixin,current_user
 from functools import wraps
+from datetime import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
+likes_table = db.Table('likes', db.Column('user_id',db.Integer, db.ForeignKey('user.id')),db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
+interviews_table = db.Table('interviews', db.Column('user_id',db.Integer, db.ForeignKey('user.id')),db.Column('interview_id', db.Integer, db.ForeignKey('interview.id')))
 
 class User(db.Model,UserMixin):
     id=db.Column(db.Integer,primary_key=True)
@@ -18,6 +22,11 @@ class User(db.Model,UserMixin):
     company_gst_number=db.Column(db.String(120),nullable=True)
     company_info=db.Column(db.Text,nullable=True)
     position=db.Column(db.String(120),nullable=True)
+    cv=db.Column(db.String(50),default='none.pdf')    
+    posts = db.relationship('Post', backref='author', lazy=True)
+    jobs = db.relationship('Job', backref='author', lazy=True)
+    liked_posts = db.relationship('Post', secondary=likes_table, backref=db.backref('likers', lazy=True))
+    interviews = db.relationship('Interview', secondary=interviews_table, backref=db.backref('employees', lazy=True))
 
     def get_urole(self):
             return self.type
@@ -28,5 +37,38 @@ class User(db.Model,UserMixin):
             return f"User('{self.name}','{self.email}','{self.profile_picture}','{self.company_name}','{self.company_info}','{self.position}')"
 
 
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    old_cv=db.Column(db.String(50))    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"
 
-        
+
+class Job(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    typeofjob = db.Column(db.String(100), nullable=False)
+    salary = db.Column(db.Integer, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.Text, nullable=False)
+    interviews = db.relationship('Interview', backref='job_ref', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    def __repr__(self):
+        return f"Job('{self.title}', '{self.date_posted}')"
+
+
+class Interview(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    job = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Job('{self.title}', '{self.date_posted}')"

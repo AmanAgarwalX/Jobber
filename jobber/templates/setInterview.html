@@ -1,0 +1,65 @@
+{%extends "layout.html" %}
+{%block content%}
+<h1>Set Interview for {{job_id}}</h1>
+<form method="POST" action="">
+    {{form.hidden_tag()}}
+    <div>
+        {{form.title.label}}
+        {% if form.title.errors%}
+            {{form.title}}
+                {% for error in form.title.errors%}
+                    <span>{{error}}</span>
+                {% endfor%}
+        {%else%}
+            {{form.title}}
+        {% endif %}
+    </div>
+    <div>
+            {{form.location.label}}
+            {% if form.location.errors%}
+                {{form.location}}
+                    {% for error in form.location.errors%}
+                        <span>{{error}}</span>
+                    {% endfor%}
+            {%else%}
+                {{form.location}}
+            {% endif %}
+    </div>
+    <div>
+        {{form.date.label}}
+        {% if form.date.errors%}
+            {{form.date}}
+                {% for error in form.date.errors%}
+                    <span>{{error}}</span>
+                {% endfor%}
+        {%else%}
+            {{form.date}}
+        {% endif %}
+    </div>
+    <div>
+        {{form.time.label}}
+        {% if form.time.errors%}
+            {{form.time}}
+                {% for error in form.time.errors%}
+                    <span>{{error}}</span>
+                {% endfor%}
+        {%else%}
+            {{form.time}}
+        {% endif %}
+    </div>
+    <div>
+            {{form.description.label}}
+            {% if form.description.errors%}
+                {{form.description}}
+                    {% for error in form.description.errors%}
+                        <span>{{error}}</span>
+                    {% endfor%}
+            {%else%}
+                {{form.description}}
+            {% endif %}
+    </div>
+    <div>
+        {{form.submit}}
+    </div>
+</form>
+{%endblock%}

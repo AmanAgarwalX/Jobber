@@ -1,0 +1,8 @@
+{%extends "layout.html"%}
+{%block content%}
+<h1>Jobs from {{user}}</h1>
+{% for job in jobs %}
+    <a href="{{url_for('setinterview',job_id=job.id)}}"><h2>{{job.title}}</h2></a>
+{%endfor%}
+
+{%endblock content%}
