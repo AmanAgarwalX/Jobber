@@ -10,6 +10,7 @@ def load_user(user_id):
 
 likes_table = db.Table('likes', db.Column('user_id',db.Integer, db.ForeignKey('user.id')),db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
 interviews_table = db.Table('interviews', db.Column('user_id',db.Integer, db.ForeignKey('user.id')),db.Column('interview_id', db.Integer, db.ForeignKey('interview.id')))
+keyword_table=db.Table('keywords', db.Column('user_id',db.Integer, db.ForeignKey('user.id')),db.Column('keyword_id', db.Integer, db.ForeignKey('keyword.id')))
 
 class User(db.Model,UserMixin):
     id=db.Column(db.Integer,primary_key=True)
@@ -22,10 +23,11 @@ class User(db.Model,UserMixin):
     company_gst_number=db.Column(db.String(120),nullable=True)
     company_info=db.Column(db.Text,nullable=True)
     position=db.Column(db.String(120),nullable=True)
-    cv=db.Column(db.String(50),default='none.pdf')    
+    cv=db.Column(db.String(50),default='none.pdf')
     posts = db.relationship('Post', backref='author', lazy=True)
     jobs = db.relationship('Job', backref='author', lazy=True)
     liked_posts = db.relationship('Post', secondary=likes_table, backref=db.backref('likers', lazy=True))
+    keywords = db.relationship('Keyword', secondary=keyword_table, backref=db.backref('users', lazy=True))
     interviews = db.relationship('Interview', secondary=interviews_table, backref=db.backref('employees', lazy=True))
 
     def get_urole(self):
@@ -47,6 +49,11 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
+class Keyword(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    def __repr__(self):
+        return f"Keywords('{self.title}')"
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -71,4 +78,4 @@ class Interview(db.Model):
     job = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
 
     def __repr__(self):
-        return f"Job('{self.title}', '{self.date_posted}')"
+        return f"Interview('{self.title}', '{self.date_posted}')"

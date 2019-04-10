@@ -125,7 +125,7 @@ def employeeupdate():
                     current_user.profile_picture=picture_fn
                     db.session.commit()
                 if form.cv.data:
-                    cv_fn=save_cv(form.cv.data)
+                    cv_fn=save_cv(form.cv.data,current_user)
                     current_user.cv=cv_fn
                     post = Post(title=current_user.name, content="upload", author=current_user)
                     db.session.add(post)
@@ -192,11 +192,13 @@ def save_picture(pic):
     i.save(picture_path)
     return picture_fn
 
-def save_cv(cv):
+def save_cv(cv,current_user):
     _,f_ext=os.path.splitext(cv.filename)
     cv_fn=current_user.email+str(int(round(time.time() * 1000)))+f_ext
     cv_path=os.path.join(app.root_path,'static/cvs',cv_fn)
     cv.save(cv_path)
+    
+    current_user.keywords.append()
     return cv_fn
 
 
