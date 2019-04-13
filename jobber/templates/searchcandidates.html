@@ -1,0 +1,37 @@
+{%extends "layout.html"%} {%block content%}
+<form class="form-inline" action="" method="POST">
+  <label for="keywords" class="mb-2 mr-sm-2">Enter keywords:</label>
+  <input
+    type="text"
+    class="form-control mb-2 mr-sm-2"
+    id="keywords"
+    placeholder="Enter keywords"
+    name="keywords"
+  />
+  <button type="submit" class="btn btn-primary mb-2">Submit</button>
+</form>
+{%for user in users%}
+<div class="card mb-1">
+  <div class="card-body">
+    <div style="float: left">
+      <img
+        src="{{url_for('static',filename='profile_pics/'+user.profile_picture)}}"
+        class="img-thumbnail rounded-circle"
+        style="height: 10%"
+      />
+      <p class="card-text">
+        {{ user.name }}<br />
+        {{ user.email }}
+      </p>
+    </div>
+    <div>
+      <a
+        href="{{url_for('employeeaccount',emp_id=user.id)}}"
+        class="btn btn-primary"
+        style="float:right"
+        >View</a
+      >
+    </div>
+  </div>
+</div>
+{%endfor%} {%endblock content%}

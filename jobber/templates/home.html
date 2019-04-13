@@ -1,18 +1,130 @@
-{%extends "layout.html"%}
-{%block content%}
-<h1>This is home page</h1>
-<a href="{{url_for('employeeHome')}}">Employee Home</a>
-<a href="{{url_for('employerHome')}}">Employer Home</a>
-{% for post in posts.items %}
-    <h2>{{post.author.name}}</h2>
-    <embed src="{{url_for('static',filename=('cvs/'+post.old_cv))}}" type="application/pdf" width="100%" height="600px" />
-{%endfor%}
-{%for page_num in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2)%}
-{%if page_num%}
-<a href="{{url_for('home',page=page_num)}}">{{page_num}}</a>
-{%else%}
-...
-{%endif%}    
-{%endfor%}
+{%extends "layout.html"%} {%block content%} {% for post in posts.items %}
+<div class="card mb-3">
+  <div class="card-body col-md-10 justify-content-center">
+    <div class="clearfix">
+      <a href="{{url_for('employeeaccount',emp_id=post.author.id)}}"
+        ><h4 class="card-title float-left">{{ post.author.name }}</h4></a
+      >
+      <h5 class="card-text float-right">{{ post.date_posted.date() }}</h5>
+    </div>
+    <div>
+      <p class="card-text">{{ post.content }}</p>
+    </div>
+    <embed
+      src="{{url_for('static',filename=('cvs/'+post.old_cv))}}"
+      type="application/pdf"
+      width="100%"
+      height="600px"
+    />
+  </div>
+  <div class="card-footer" id="liker_id">
+    {% if current_user.type=='employer' %}
+    <button
+      class="btn btn-outline-success btn-lg float-left"
+      id="{{ post.id }}"
+    >
+      {% if post in current_user.liked_posts%}
+      <span class="fa fa-thumbs-o-up fa-thumbs-up" id="liked"></span>
+      {%else%}
+      <span class="fa fa-thumbs-o-up" id="unliked"></span>
+      {%endif%}
+    </button>
 
+    {%endif%}
+    <a href="#" data-toggle="modal" data-target="#myModal_{{ post.id }}">
+      <h5 class="card-text float-left ml-3" id="likers_{{ post.id }}">
+        {{ len(post.likers) }} employers like this
+      </h5>
+    </a>
+  </div>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal_{{ post.id }}">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">People who liked</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          {% for liker in post.likers %}
+          <a href="{{url_for('employeraccount',emp_id=liker.id)}}">{{
+            liker.company_name
+          }}</a
+          ><br />
+          {%endfor%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%endfor%}
+<div class="pagination pt-4 justify-content-center">
+  {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1,
+  right_current=2) %} {% if page_num %} {% if posts.page == page_num %}
+  <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{
+    page_num
+  }}</a>
+  {% else %}
+  <a
+    class="btn btn-outline-info mb-4"
+    href="{{ url_for('home', page=page_num) }}"
+    >{{ page_num }}</a
+  >
+  {% endif %} {% else %} ... {% endif %} {% endfor %}
+</div>
+<script>
+  $(document).ready(function() {
+    $("#liker_id button").click(function() {
+      id = $(this).attr("id");
+      check = $(this)
+        .children("span")
+        .prop("id");
+      console.log(check);
+      $(this)
+        .children("span")
+        .toggleClass("fa-thumbs-up");
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:5000/employer/like_post",
+        data: JSON.stringify({
+          name: "Group Name2",
+          post_id: id
+        }), // or JSON.stringify ({name: 'jonas'}),
+        success: data => {
+          var res = String($("#likers_" + id).text())
+            .trim()
+            .split(" ");
+          console.log(res);
+          value = parseInt(res[0]);
+          if (check === "unliked") {
+            value++;
+            $(this)
+              .children("span")
+              .prop("id", "liked");
+          } else {
+            value--;
+            $(this)
+              .children("span")
+              .prop("id", "unliked");
+          }
+          console.log(
+            $(this)
+              .children("span")
+              .prop("id")
+          );
+          res[0] = String(value);
+          $("#likers_" + id).text(res.join(" "));
+        },
+        contentType: "application/json",
+        dataType: "json"
+      });
+    });
+  });
+</script>
 {%endblock content%}

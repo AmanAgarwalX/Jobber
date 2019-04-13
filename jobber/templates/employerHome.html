@@ -1,13 +1,11 @@
-{%extends "layout.html"%}
-{%block content%}
+{%extends "layout.html"%} {%block content%}
 <h1>This is employer home page</h1>
 {% if current_user.is_authenticated %}
-<a href="{{url_for('employeraccount')}}">Account</a>
-<a href="{{url_for('newjob')}}">Post new job</a>
-<a href="{{url_for('logout')}}">Logout</a>
+<a href="{{url_for('employeraccount',emp_id=current_user.id)}}">Account</a>
+<a href="{{ url_for('newjob') }}">Post new job</a>
+<a href="{{ url_for('logout') }}">Logout</a>
 
 {% else %}
-<a href="{{url_for('employerlogin')}}">Login</a>
-<a href="{{url_for('employerregister')}}">Register</a>
-{% endif %}
-{%endblock content%}
+<a href="{{ url_for('employerlogin') }}">Login</a>
+<a href="{{ url_for('employerregister') }}">Register</a>
+{% endif %} {%endblock content%}

@@ -1,0 +1,15 @@
+{%extends "layout.html"%} {%block content%}
+<h5>Title : {{ job.title }}</h5>
+<h5>Location : {{ job.location }}</h5>
+<h5>Type of Job : {{ job.typeofjob }}</h5>
+<h5>Salary : {{ job.salary }}</h5>
+<h5>Date Posted : {{ job.date_posted }}</h5>
+<p>Job Description : {{ job.description }}</p>
+<h5>Candidates Applied:</h5>
+{%for member in job.employees%}
+<a
+  href="{{url_for('viewapplicant',user_id=member.id,job_id=job.id)}}"
+  class="btn btn-outline-primary"
+  ><h4>{{ member.name }}</h4></a
+>
+{%endfor%} {%endblock content%}

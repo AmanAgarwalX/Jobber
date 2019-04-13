@@ -49,6 +49,8 @@ class EmployeeUpdateAccountForm(FlaskForm):
     cv=FileField('Update CV',validators=[FileAllowed(['pdf','PDF'])])
     email=StringField('Email Address',validators=[DataRequired(),Email()])
     name=StringField('Name',validators=[DataRequired()])
+    cv=FileField('Upload CV',validators=[FileAllowed(['pdf','PDF'])])
+    content=StringField('Content',validators=[DataRequired()])
     submit=SubmitField('Update')
     def validate_email(self,email):
         if(email.data.lower() != current_user.email):    
@@ -59,6 +61,7 @@ class EmployeeUpdateAccountForm(FlaskForm):
 class EmployeeUpdateForm(FlaskForm):
     picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpeg','png','JPG'])])
     cv=FileField('Upload CV',validators=[FileAllowed(['pdf','PDF'])])
+    content=StringField('Content',validators=[DataRequired()])
     submit=SubmitField('Update')
 
 class NewJobForm(FlaskForm):
@@ -74,7 +77,7 @@ class NewInterviewForm(FlaskForm):
     location=StringField('Location',validators=[DataRequired()])
     date=DateField('Date',format='%Y-%m-%d')
     time=TimeField('Time')
-    description=TextAreaField('Job Info',validators=[DataRequired()])
+    description=TextAreaField('Interview Info',validators=[DataRequired()])
     submit=SubmitField('Add')
 
 class EmployerUpdateAccountForm(FlaskForm):

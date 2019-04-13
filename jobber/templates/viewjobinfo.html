@@ -1,0 +1,16 @@
+{%extends "layout.html"%} {%block content%}
+<h1>Title:{{ job.title }}</h1>
+<h3>Location:{{ job.location }}</h3>
+<h3>Type Of Job:{{ job.typeofjob }}</h3>
+<h3>Salary:{{ job.salary }}</h3>
+<h3>Date Posted:{{ job.date_posted.date() }}</h3>
+<p><h3>Desciption:</h3>{{ job.description }}</p>
+{%if current_user not in job.employees%}
+<form method="POST">
+  <button type="submit">Apply</button>
+</form>
+{% endif %} {%if selected==1%}
+<a href="{{url_for('chooseinterviewtimeslot',job_id=job.id)}}"
+  >You're Selected! Choose interview time slot</a
+>
+{% endif %} {%endblock content%}

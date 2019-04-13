@@ -1,25 +1,153 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='main.css')}}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='bootstrap.min.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static',filename='main.css')}}"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     {%if title%}
-    <title>Jobber-{{title}}</title>
+    <title>Jobber-{{ title }}</title>
     {%else%}
     <title>Jobber</title>
     {%endif%}
-</head>
-<body>
-    {%with messages=get_flashed_messages()%}
-        {%if messages%}
-            {%for message in messages%}
-                <div>
-                    {{message}}
+  </head>
+  <body>
+    <script src="{{url_for('static',filename='jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='popper.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+    <script>
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+    </script>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">Jobber</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarToggle"
+            aria-controls="navbarToggle"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              {% if current_user.type=='employee' %}
+              <a class="nav-item nav-link" href="{{ url_for('employeeHome') }}"
+                >Dashboard</a
+              >
+              <a class="nav-item nav-link" href="{{ url_for('searchjobs') }}"
+                >Jobs</a
+              >
+              <a class="nav-item nav-link" href="{{ url_for('appliedjobs') }}"
+                >Applied Jobs</a
+              >
+              {% elif current_user.type=='employer' %}
+              <a class="nav-item nav-link" href="{{ url_for('employerHome') }}"
+                >Dashboard</a
+              >
+              <a class="nav-item nav-link" href="{{ url_for('viewjob') }}"
+                >Jobs</a
+              >
+              <a class="nav-item nav-link" href="{{ url_for('searchcandidates') }}"
+                >Search For Candidates</a
+              >
+              {%else%} {% endif %}
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if current_user.is_authenticated %}
+              {% if current_user.type=='employee' %}
+              <a
+                class="nav-item nav-link"
+                href="{{ url_for('employeeaccountupdate') }}"
+                >Update Profile</a
+              >
+              <a
+                class="nav-item nav-link"
+                href="{{ url_for('employeeaccount',emp_id=current_user.id) }}"
+                >Account</a
+              >{% elif current_user.type=='employer' %}
+              
+              <a class="nav-item nav-link" href="{{url_for('newjob')}}">Post new job</a>
+              <a
+                class="nav-item nav-link"
+                href="{{ url_for('employeraccountupdate') }}"
+                >Update Profile</a
+              >
+              <a
+              class="nav-item nav-link"
+                href="{{ url_for('employeraccount',emp_id=current_user.id) }}"
+                >Account</a
+              >
+              
+              {% endif %}
+              <a class="nav-item nav-link" href="{{ url_for('logout') }}"
+                >Logout</a
+              >
+              {% else %}
+              <a class="nav-item nav-link" href="{{ url_for('employeelogin') }}"
+                >Login</a
+              >
+              <a
+                class="nav-item nav-link"
+                href="{{ url_for('employeeregister') }}"
+                >Register as Employee</a
+              >
+              <a
+                class="nav-item nav-link"
+                href="{{ url_for('employerregister') }}"
+                >Register as Employer</a
+              >
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="content-section">
+                  <h3>Our Sidebar</h3>
+                  <p class='text-muted'>You can put any information here you'd like.
+                    <ul class="list-group">
+                      <li class="list-group-item list-group-item-light">Latest Posts</li>
+                      <li class="list-group-item list-group-item-light">Announcements</li>
+                      <li class="list-group-item list-group-item-light">Calendars</li>
+                      <li class="list-group-item list-group-item-light">etc</li>
+                    </ul>
+                  </p>
                 </div>
-            {%endfor%}
-        {%endif%}
-    {%endwith%}
-    {%block content%}{%endblock%}
-</body>
+              </div>
+          <div class="col-md-10">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-info">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+          </div>
+         
+        </div>
+      </main>
+  </body>
 </html>

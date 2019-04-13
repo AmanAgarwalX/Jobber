@@ -3,7 +3,7 @@ from tika import parser
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 #write a for-loop to open many files -- leave a comment if you'd #like to learn how
-filename = 'abc.pdf' 
+filename = 'a.pdf' 
 #open allows you to read the file
 pdfFileObj = open(filename,'rb')
 #The pdfReader variable is a readable object that will be parsed
@@ -22,7 +22,7 @@ if text != "":
    text = text
 #If the above returns as False, we run the OCR library textract to #convert scanned/image based PDF files into text
 else:
-    raw = parser.from_file('abc.pdf')
+    raw = parser.from_file('a.pdf')
     text =raw['content'] 
 # Now we have a text variable which contains all the text derived #from our PDF file. Type print(text) to see what it contains. It #likely contains a lot of spaces, possibly junk such as '\n' etc.
 # Now, we will clean our text variable, and return it as a list of keywords.

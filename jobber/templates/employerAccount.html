@@ -1,91 +1,23 @@
-{%extends "layout.html" %}
-{%block content%}
-<h1>{{current_user.name}}</h1>
-<h2>{{current_user.email}}</h2>
-<h2>{{current_user.company_name}}</h2>
-<h2>{{current_user.company_gst_number}}</h2>
-<h2>{{current_user.company_info}}</h2>
-<h2>{{current_user.position}}</h2>
-<img src="{{url_for('static',filename='profile_pics/'+current_user.profile_picture)}}" style="height:120px"/>
-<form method="POST" action="" enctype="multipart/form-data">
-    {{form.hidden_tag()}}
-    <div>
-        {{form.email.label}}
-        {% if form.email.errors%}
-            {{form.email}}
-                {% for error in form.email.errors%}
-                    <span>{{error}}</span>
-                {% endfor%}
-        {%else%}
-            {{form.email}}
-        {% endif %}
-    </div>
-    <div>
-            {{form.name.label}}
-            {% if form.name.errors%}
-                {{form.name}}
-                    {% for error in form.name.errors%}
-                        <span>{{error}}</span>
-                    {% endfor%}
-            {%else%}
-                {{form.name}}
-            {% endif %}
-    </div>
-    <div>
-            {{form.company_name.label}}
-            {% if form.company_name.errors%}
-                {{form.company_name}}
-                    {% for error in form.company_name.errors%}
-                        <span>{{error}}</span>
-                    {% endfor%}
-            {%else%}
-                {{form.company_name}}
-            {% endif %}
-    </div>
-    <div>
-            {{form.company_gst_number.label}}
-            {% if form.company_gst_number.errors%}
-                {{form.company_gst_number}}
-                    {% for error in form.company_gst_number.errors%}
-                        <span>{{error}}</span>
-                    {% endfor%}
-            {%else%}
-                {{form.company_gst_number}}
-            {% endif %}
-    </div>
-    <div>
-            {{form.company_info.label}}
-            {% if form.company_info.errors%}
-                {{form.company_info}}
-                    {% for error in form.company_info.errors%}
-                        <span>{{error}}</span>
-                    {% endfor%}
-            {%else%}
-                {{form.company_info}}
-            {% endif %}
-    </div>
-    <div>
-            {{form.position.label}}
-            {% if form.position.errors%}
-                {{form.position}}
-                    {% for error in form.position.errors%}
-                        <span>{{error}}</span>
-                    {% endfor%}
-            {%else%}
-                {{form.position}}
-            {% endif %}
-    </div>
-    <div>
-        {{form.picture.label}}
-        {{form.picture}}
-        {% if form.picture.errors%}
-                {% for error in form.picture.errors%}
-                    <span>{{error}}</span></br>
-                {% endfor%}
-        {% endif %}
-    </div>
-    <div>
-        {{form.submit}}
-    </div>
-</form>
+{%extends "layout.html" %} {%block content%}
+<div>
+  <div style="position: absolute; z-index: 1;">
+    <img
+      src="{{url_for('static',filename='cover.jpg')}}"
+      class="img-fluid h-25 w-100"
+    />
+  </div>
+  <div style="position: absolute; z-index: 2;">
+    <img
+      src="{{url_for('static',filename='profile_pics/'+employer.profile_picture)}}"
+      class="img-fluid h-25 rounded-circle"
+    />
+  </div>
+</div>
+<div style="position:absolute;top: 25%;width: 100%">
+  <h2>Name:{{ employer.name }}</h2>
+  <h2>Email:{{ employer.email }}</h2>
+  <h2>Company Name:{{ employer.company_name }}</h2>
+  <h2>Company Info:{{ employer.company_info }}</h2>
+  <h2>Position:{{ employer.position }}</h2>
+</div>
 {%endblock%}

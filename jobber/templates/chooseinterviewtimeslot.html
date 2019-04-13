@@ -1,0 +1,13 @@
+{%extends "layout.html"%} {%block content%} {% for interview in interviews %}
+<form action="" method="POST">
+  <input type="hidden" name="interview_id" value="{{ interview.id }}" />
+  <h3>{{ interview.title }}</h3>
+  <h3>{{ interview.location }}</h3>
+  <h3>{{ interview.time }}</h3>
+  <h3>{{ interview.description }}</h3>
+  <button type="submit">
+    {%if interview not in current_user.interviews%}Select{% else
+    %}Deselect{%endif%}
+  </button>
+</form>
+{%endfor%} {%endblock content%}

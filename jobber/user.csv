@@ -1,0 +1,5 @@
+id,type,email,name,profile_picture,password,company_name,company_gst_number,company_info,position,cv
+1,employer,aa@aa.com,anan,default.jpg,$2b$12$ouXATEywnW9nb8T29VIr8OdbeWQLpVDHVNVRio5PBstpLc3CskNfK,anan,anan,nana,anan,none.pdf
+2,employee,aa@aaa.com,Aman ,default.jpg,$2b$12$hU55zFjJYpX7Cj8luM.UruQGwPIkvFPXFGtzI9n4kFxVqwOf2Yjtu,,,,,aa@aaa.com1554707195421.pdf
+3,employee,aaa@aaa.com,ana,default.jpg,$2b$12$MAeY199OdnePXpzE5Piwsel0GSeFgpCdI5k4ryI0ct3sKyUhhnAIy,,,,,aaa@aaa.com1555037105806.pdf
+4,employer,aman@aman.com,aa,default.jpg,$2b$12$rIxgsPnm47l0ih9OYoKBg.302SwhiKTpAVqlxUNVZx8RQhZybofiy,aa,aa,aa,aa,none.pdf

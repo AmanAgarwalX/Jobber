@@ -1,8 +1,51 @@
-{%extends "layout.html"%}
-{%block content%}
-<h1>Jobs from {{user}}</h1>
+{%extends "layout.html"%} {%block content%}
+<h1>Jobs from {{ user }}</h1>
 {% for job in jobs %}
-    <a href="{{url_for('setinterview',job_id=job.id)}}"><h2>{{job.title}}</h2></a>
-{%endfor%}
+<div class="card mb-1">
+  <div class="card-body">
+    <form action="" method="POST" style="margin: 0; padding: 0;">
+      <div style="display:inline">
+        <h5 style="display: inline">{{ job.title }}</h5>
+        <div style="float: right;">
+          <a
+            href="{{url_for('viewinterviews',job_id=job.id)}}"
+            class="btn btn-primary"
+            >See Interviews</a
+          >
+          <a
+            href="{{url_for('setinterview',job_id=job.id)}}"
+            class="btn btn-primary"
+            >Set/Add Interview</a
+          >
+          <a
+            href="{{url_for('checkapplicants',job_id=job.id)}}"
+            class="btn btn-primary"
+            >View</a
+          >
+          <input type="hidden" name="job_id" value="{{ job.id }}" /><button
+            type="submit"
+            style="display: inline"
+            class="btn btn-primary"
+          >
+            Delete Job
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!--
+<form action="" method="POST">
+  <input type="hidden" name="job_id" value="{{ job.id }}" />
+  <h2>{{ job.title }}</h2>
 
-{%endblock content%}
+  <a href="{{url_for('viewinterviews',job_id=job.id)}}">See Interviews</a>
+  <br />
+  <a href="{{url_for('setinterview',job_id=job.id)}}">Set/Add Interview</a>
+  <br /><a href="{{url_for('checkapplicants',job_id=job.id)}}">See Applicants</a
+  ><br />
+  <button type="submit">
+    Delete Job
+  </button>
+</form>-->
+{%endfor%} {%endblock content%}

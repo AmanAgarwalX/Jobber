@@ -1,8 +1,20 @@
-{%extends "layout.html"%}
-{%block content%}
-<h1>Interviews for {{job_id}}</h1>
+{%extends "layout.html"%} {%block content%}
+<h1>Interviews for {{ job_title }}</h1>
 {% for interview in interviews %}
-   <h2>{{interview.title}}</h2>
-{%endfor%}
-
-{%endblock content%}
+<div class="card mb-1">
+  <div class="card-body">
+    <div>
+      <h5 class="card-title">{{ interview.title }}</h5>
+      {%if interview.employees%} {%for employee in interview.employees%}
+      <div class="card-text">
+        {{ employee.name }}
+      </div>
+      {%endfor%} {% else %}
+      <div class="card-text">
+        No candidates have applied for interviews yet.
+      </div>
+      {%endif%}
+    </div>
+  </div>
+</div>
+{%endfor%} {%endblock content%}
